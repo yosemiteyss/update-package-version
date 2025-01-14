@@ -1,0 +1,33 @@
+name: Test Publish
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  test-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        id: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Update Package Version
+        id: update-package-version
+        uses: yosemiteyss/update-package-version@v1
+        with:
+          release_tag: ${{ github.event.release.tag_name }}
+          commit_lock_file: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
