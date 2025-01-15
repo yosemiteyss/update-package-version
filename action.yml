@@ -10,7 +10,6 @@ inputs:
   release_tag:
     description: 'Release tag, format must be vX.X.X'
     required: true
-    default: 'v1.0.0'
   commit_lock_file:
     description: 'Whether to commit package-lock.json or not'
     required: false
@@ -27,14 +26,9 @@ inputs:
     description: 'Commit message, followed by version'
     required: false
     default: 'ci: updated package version'
-  commit_tag_prefix:
-    description: 'Commit tag prefix, followed by version'
-    required: false
-    default: 'release_'
-
-outputs:
-  updated_version:
-    description: 'The package version after update'
+  target_branch:
+    description: 'Branch for committing new version'
+    required: true
 
 runs:
   using: node20

@@ -25626,6 +25626,151 @@ module.exports = {
 
 /***/ }),
 
+/***/ 3190:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.execCommand = execCommand;
+const util_1 = __nccwpck_require__(9023);
+const child_process_1 = __nccwpck_require__(5317);
+const core = __importStar(__nccwpck_require__(7484));
+const execPromise = (0, util_1.promisify)(child_process_1.exec);
+async function execCommand(command) {
+    const output = await execPromise(command, {
+        encoding: 'utf8',
+        cwd: process.cwd()
+    });
+    core.info(output.stdout);
+}
+
+
+/***/ }),
+
+/***/ 1243:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Git = void 0;
+const exec_1 = __nccwpck_require__(3190);
+class Git {
+    static async setConfig(email, username) {
+        await (0, exec_1.execCommand)(`git config user.email "${email}"`);
+        await (0, exec_1.execCommand)(`git config user.name "${username}"`);
+        await (0, exec_1.execCommand)(`git remote set-url --push origin https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}`);
+    }
+    static async checkout(branch) {
+        await (0, exec_1.execCommand)(`git checkout -b ${branch}`);
+    }
+    static async listStagedFiles() {
+        await (0, exec_1.execCommand)('git diff --cached --name-only');
+    }
+    static async addAllFiles() {
+        await (0, exec_1.execCommand)('git add --all');
+    }
+    static async commit(message) {
+        await (0, exec_1.execCommand)(`git commit -m "${message}"`);
+    }
+    static async push(branch) {
+        await (0, exec_1.execCommand)(`git push -u origin ${branch}`);
+    }
+}
+exports.Git = Git;
+
+
+/***/ }),
+
+/***/ 8422:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getActionInputs = getActionInputs;
+const core = __importStar(__nccwpck_require__(7484));
+function getActionInputs() {
+    return {
+        releaseTag: core.getInput('release_tag'),
+        commitLockFile: core.getBooleanInput('commit_lock_file'),
+        commitUserEmail: core.getInput('commit_user_email'),
+        commitUserName: core.getInput('commit_user_name'),
+        commitMessage: core.getInput('commit_message'),
+        targetBranch: core.getInput('target_branch')
+    };
+}
+
+
+/***/ }),
+
 /***/ 1730:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -25668,18 +25813,9 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = run;
 const core = __importStar(__nccwpck_require__(7484));
 const path = __importStar(__nccwpck_require__(6928));
-const fs = __importStar(__nccwpck_require__(9896));
-const child_process_1 = __nccwpck_require__(5317);
-function getActionInputs() {
-    return {
-        releaseTag: core.getInput('release_tag'),
-        commitLockFile: core.getBooleanInput('commit_lock_file'),
-        commitUserEmail: core.getInput('commit_user_email'),
-        commitUserName: core.getInput('commit_user_name'),
-        commitMessage: core.getInput('commit_message'),
-        commitTagPrefix: core.getInput('commit_tag_prefix')
-    };
-}
+const git_1 = __nccwpck_require__(1243);
+const npm_1 = __nccwpck_require__(5210);
+const inputs_1 = __nccwpck_require__(8422);
 function parseReleaseTagToVersion(tag) {
     const versionTagRegex = /^v\d+\.\d+\.\d+$/;
     if (!versionTagRegex.test(tag)) {
@@ -25687,40 +25823,29 @@ function parseReleaseTagToVersion(tag) {
     }
     return tag.replace('v', '');
 }
-function readPackageJson() {
-    const filePath = path.resolve(process.cwd(), 'package.json');
-    if (!fs.existsSync(filePath)) {
-        throw new Error(`Cannot find package.json in path: ${filePath}`);
-    }
-    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-}
-function execSyncWithLog(command) {
-    core.info((0, child_process_1.execSync)(command, { encoding: 'utf8' }));
-}
 async function run() {
     try {
-        const inputs = getActionInputs();
+        const inputs = (0, inputs_1.getActionInputs)();
         const version = parseReleaseTagToVersion(inputs.releaseTag);
-        const packageJson = readPackageJson();
+        core.info(`[-] Parsed release tag to version: ${version}`);
+        await git_1.Git.checkout(inputs.targetBranch);
+        core.info(`[-] Checked out branch: ${inputs.targetBranch}`);
+        const filePath = path.resolve(process.cwd(), 'package.json');
+        const packageJson = npm_1.Npm.readPackageJson(filePath);
         packageJson['version'] = version;
-        fs.writeFileSync(packageJson, JSON.stringify(packageJson, null, 2), 'utf-8');
-        execSyncWithLog(`git config user.email "${inputs.commitUserEmail}"`);
-        core.info(`Updated git email: ${inputs.commitUserEmail}`);
-        execSyncWithLog(`git config user.name "${inputs.commitUserName}"`);
-        core.info(`Updated git username: ${inputs.commitUserName}`);
+        npm_1.Npm.writePackageJson(filePath, packageJson);
+        core.info(`[-] Updated package.json with new version`);
+        await git_1.Git.setConfig(inputs.commitUserEmail, inputs.commitUserName);
+        core.info(`[-] Updated git user: ${inputs.commitUserName} (${inputs.commitUserEmail})`);
         if (inputs.commitLockFile) {
-            core.info('Need to commit lock file. Start npm install:');
-            execSyncWithLog('npm install');
+            core.info('[-] Need to commit lock file. Start npm install...');
+            await npm_1.Npm.install();
         }
-        core.info('Staged files:');
-        execSyncWithLog('git diff --cached --name-only');
-        execSyncWithLog('git add --all');
-        core.info('Commit:');
-        execSyncWithLog(`git commit -m "${inputs.commitMessage} ${version}"`);
-        execSyncWithLog(`git tag ${inputs.commitTagPrefix}_${version}`);
-        core.info('Push:');
-        execSyncWithLog(`git remote set-url --push origin https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}`);
-        execSyncWithLog(`git push --tags`);
+        core.info('[-] Commit:');
+        await git_1.Git.addAllFiles();
+        await git_1.Git.commit(`${inputs.commitMessage} ${version}`);
+        core.info('[-] Push:');
+        await git_1.Git.push(inputs.targetBranch);
     }
     catch (error) {
         if (error instanceof Error) {
@@ -25731,6 +25856,37 @@ async function run() {
         }
     }
 }
+
+
+/***/ }),
+
+/***/ 5210:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Npm = void 0;
+const exec_1 = __nccwpck_require__(3190);
+const fs_1 = __importDefault(__nccwpck_require__(9896));
+class Npm {
+    static async install() {
+        await (0, exec_1.execCommand)('npm install');
+    }
+    static readPackageJson(filePath) {
+        if (!fs_1.default.existsSync(filePath)) {
+            throw new Error(`Cannot find package.json in path: ${filePath}`);
+        }
+        return JSON.parse(fs_1.default.readFileSync(filePath, 'utf-8'));
+    }
+    static writePackageJson(filePath, content) {
+        fs_1.default.writeFileSync(filePath, JSON.stringify(content, null, 2), 'utf-8');
+    }
+}
+exports.Npm = Npm;
 
 
 /***/ }),

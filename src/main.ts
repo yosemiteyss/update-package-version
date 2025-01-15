@@ -1,18 +1,8 @@
 import * as core from '@actions/core'
 import * as path from 'path'
-import * as fs from 'fs'
-import { execSync } from 'child_process'
-
-function getActionInputs() {
-  return {
-    releaseTag: core.getInput('release_tag'),
-    commitLockFile: core.getBooleanInput('commit_lock_file'),
-    commitUserEmail: core.getInput('commit_user_email'),
-    commitUserName: core.getInput('commit_user_name'),
-    commitMessage: core.getInput('commit_message'),
-    commitTagPrefix: core.getInput('commit_tag_prefix')
-  }
-}
+import { Git } from './git'
+import { Npm } from './npm'
+import { getActionInputs } from './inputs'
 
 function parseReleaseTagToVersion(tag: string): string {
   const versionTagRegex = /^v\d+\.\d+\.\d+$/
@@ -22,52 +12,40 @@ function parseReleaseTagToVersion(tag: string): string {
   return tag.replace('v', '')
 }
 
-function readPackageJson() {
-  const filePath = path.resolve(process.cwd(), 'package.json')
-  if (!fs.existsSync(filePath)) {
-    throw new Error(`Cannot find package.json in path: ${filePath}`)
-  }
-
-  return JSON.parse(fs.readFileSync(filePath, 'utf-8'))
-}
-
-function execSyncWithLog(command: string) {
-  core.info(execSync(command, { encoding: 'utf8' }))
-}
-
 export async function run(): Promise<void> {
   try {
     const inputs = getActionInputs()
+
     const version = parseReleaseTagToVersion(inputs.releaseTag)
+    core.info(`[-] Parsed release tag to version: ${version}`)
 
-    const packageJson = readPackageJson()
+    await Git.checkout(inputs.targetBranch)
+    core.info(`[-] Checked out branch: ${inputs.targetBranch}`)
+
+    const filePath = path.resolve(process.cwd(), 'package.json')
+    const packageJson = Npm.readPackageJson(filePath)
+
     packageJson['version'] = version
-    fs.writeFileSync(packageJson, JSON.stringify(packageJson, null, 2), 'utf-8')
+    Npm.writePackageJson(filePath, packageJson)
 
-    execSyncWithLog(`git config user.email "${inputs.commitUserEmail}"`)
-    core.info(`Updated git email: ${inputs.commitUserEmail}`)
+    core.info(`[-] Updated package.json with new version`)
 
-    execSyncWithLog(`git config user.name "${inputs.commitUserName}"`)
-    core.info(`Updated git username: ${inputs.commitUserName}`)
+    await Git.setConfig(inputs.commitUserEmail, inputs.commitUserName)
+    core.info(
+      `[-] Updated git user: ${inputs.commitUserName} (${inputs.commitUserEmail})`
+    )
 
     if (inputs.commitLockFile) {
-      core.info('Need to commit lock file. Start npm install:')
-      execSyncWithLog('npm install')
+      core.info('[-] Need to commit lock file. Start npm install...')
+      await Npm.install()
     }
 
-    core.info('Staged files:')
-    execSyncWithLog('git diff --cached --name-only')
-    execSyncWithLog('git add --all')
+    core.info('[-] Commit:')
+    await Git.addAllFiles()
+    await Git.commit(`${inputs.commitMessage} ${version}`)
 
-    core.info('Commit:')
-    execSyncWithLog(`git commit -m "${inputs.commitMessage} ${version}"`)
-    execSyncWithLog(`git tag ${inputs.commitTagPrefix}_${version}`)
-
-    core.info('Push:')
-    execSyncWithLog(
-      `git remote set-url --push origin https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}`
-    )
-    execSyncWithLog(`git push --tags`)
+    core.info('[-] Push:')
+    await Git.push(inputs.targetBranch)
   } catch (error) {
     if (error instanceof Error) {
       core.setFailed(error.message)

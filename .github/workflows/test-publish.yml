@@ -13,21 +13,22 @@ jobs:
 
     steps:
       - name: Checkout
-        id: checkout
         uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        id: setup-node
-        uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'npm'
+          ref: ${{ github.ref_name }}
 
       - name: Update Package Version
-        id: update-package-version
-        uses: yosemiteyss/update-package-version@v1
+        uses: ./
         with:
           release_tag: ${{ github.event.release.tag_name }}
-          commit_lock_file: true
+          target_branch: ${{ github.event.release.target_commitish }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete Release When Failed
+        if: failure()
+        run:
+          gh release delete ${{ github.event.release.tag_name }} --cleanup-tag
+          --yes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
