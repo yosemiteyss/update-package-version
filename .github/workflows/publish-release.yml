@@ -1,0 +1,35 @@
+name: Publish Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag (format: vX.X.X)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  publish-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Update Package Version
+        uses: ./
+        with:
+          release_tag: ${{ github.event.inputs.release_tag }}
+          target_branch: ${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2.2.1
+        with:
+          tag_name: ${{ github.event.inputs.release_tag }}

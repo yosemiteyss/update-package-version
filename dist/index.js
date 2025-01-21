@@ -25696,7 +25696,8 @@ class Git {
         await (0, exec_1.execCommand)(`git remote set-url --push origin https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}`);
     }
     static async checkout(branch) {
-        await (0, exec_1.execCommand)(`git checkout -b ${branch}`);
+        const branchName = this.getShortBranchName(branch);
+        await (0, exec_1.execCommand)(`git checkout -b ${branchName}`);
     }
     static async listStagedFiles() {
         await (0, exec_1.execCommand)('git diff --cached --name-only');
@@ -25708,7 +25709,16 @@ class Git {
         await (0, exec_1.execCommand)(`git commit -m "${message}"`);
     }
     static async push(branch) {
-        await (0, exec_1.execCommand)(`git push -u origin ${branch}`);
+        const branchName = this.getShortBranchName(branch);
+        await (0, exec_1.execCommand)(`git push -u origin ${branchName}`);
+    }
+    static getShortBranchName(branch) {
+        if (branch.startsWith('refs/heads/')) {
+            return branch.replace('refs/heads/', '');
+        }
+        else {
+            return branch;
+        }
     }
 }
 exports.Git = Git;

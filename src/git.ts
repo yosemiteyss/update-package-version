@@ -10,7 +10,8 @@ export class Git {
   }
 
   static async checkout(branch: string) {
-    await execCommand(`git checkout -b ${branch}`)
+    const branchName = this.getShortBranchName(branch)
+    await execCommand(`git checkout -b ${branchName}`)
   }
 
   static async listStagedFiles() {
@@ -26,6 +27,15 @@ export class Git {
   }
 
   static async push(branch: string) {
-    await execCommand(`git push -u origin ${branch}`)
+    const branchName = this.getShortBranchName(branch)
+    await execCommand(`git push -u origin ${branchName}`)
+  }
+
+  private static getShortBranchName(branch: string): string {
+    if (branch.startsWith('refs/heads/')) {
+      return branch.replace('refs/heads/', '')
+    } else {
+      return branch
+    }
   }
 }
