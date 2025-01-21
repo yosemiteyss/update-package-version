@@ -10,4 +10,7 @@ export async function execCommand(command: string) {
     cwd: process.cwd()
   })
   core.info(output.stdout)
+  if (output.stderr.length > 0) {
+    core.error(output.stderr)
+  }
 }

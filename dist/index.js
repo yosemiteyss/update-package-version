@@ -25676,6 +25676,9 @@ async function execCommand(command) {
         cwd: process.cwd()
     });
     core.info(output.stdout);
+    if (output.stderr.length > 0) {
+        core.error(output.stderr);
+    }
 }
 
 
