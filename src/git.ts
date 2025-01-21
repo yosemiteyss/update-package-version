@@ -26,9 +26,8 @@ export class Git {
     await execCommand(`git commit -m "${message}"`)
   }
 
-  static async push(branch: string) {
-    const branchName = this.getShortBranchName(branch)
-    await execCommand(`git push -u origin ${branchName}`)
+  static async push() {
+    await execCommand(`git push`)
   }
 
   private static getShortBranchName(branch: string): string {

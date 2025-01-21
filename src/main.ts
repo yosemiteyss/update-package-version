@@ -19,9 +19,6 @@ export async function run(): Promise<void> {
     const version = parseReleaseTagToVersion(inputs.releaseTag)
     core.info(`[-] Parsed release tag to version: ${version}`)
 
-    await Git.checkout(inputs.targetBranch)
-    core.info(`[-] Checked out branch: ${inputs.targetBranch}`)
-
     const filePath = path.resolve(process.cwd(), 'package.json')
     const packageJson = Npm.readPackageJson(filePath)
 
@@ -45,7 +42,7 @@ export async function run(): Promise<void> {
     await Git.commit(`${inputs.commitMessage} ${version}`)
 
     core.info('[-] Push:')
-    await Git.push(inputs.targetBranch)
+    await Git.push()
   } catch (error) {
     if (error instanceof Error) {
       core.setFailed(error.message)

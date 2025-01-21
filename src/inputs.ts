@@ -6,7 +6,6 @@ export function getActionInputs() {
     commitLockFile: core.getBooleanInput('commit_lock_file'),
     commitUserEmail: core.getInput('commit_user_email'),
     commitUserName: core.getInput('commit_user_name'),
-    commitMessage: core.getInput('commit_message'),
-    targetBranch: core.getInput('target_branch')
+    commitMessage: core.getInput('commit_message')
   }
 }

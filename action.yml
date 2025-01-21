@@ -26,9 +26,6 @@ inputs:
     description: 'Commit message, followed by version'
     required: false
     default: 'ci: updated package version'
-  target_branch:
-    description: 'Branch for committing new version'
-    required: true
 
 runs:
   using: node20

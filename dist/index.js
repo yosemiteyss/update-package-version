@@ -25708,9 +25708,8 @@ class Git {
     static async commit(message) {
         await (0, exec_1.execCommand)(`git commit -m "${message}"`);
     }
-    static async push(branch) {
-        const branchName = this.getShortBranchName(branch);
-        await (0, exec_1.execCommand)(`git push -u origin ${branchName}`);
+    static async push() {
+        await (0, exec_1.execCommand)(`git push`);
     }
     static getShortBranchName(branch) {
         if (branch.startsWith('refs/heads/')) {
@@ -25773,8 +25772,7 @@ function getActionInputs() {
         commitLockFile: core.getBooleanInput('commit_lock_file'),
         commitUserEmail: core.getInput('commit_user_email'),
         commitUserName: core.getInput('commit_user_name'),
-        commitMessage: core.getInput('commit_message'),
-        targetBranch: core.getInput('target_branch')
+        commitMessage: core.getInput('commit_message')
     };
 }
 
@@ -25838,8 +25836,6 @@ async function run() {
         const inputs = (0, inputs_1.getActionInputs)();
         const version = parseReleaseTagToVersion(inputs.releaseTag);
         core.info(`[-] Parsed release tag to version: ${version}`);
-        await git_1.Git.checkout(inputs.targetBranch);
-        core.info(`[-] Checked out branch: ${inputs.targetBranch}`);
         const filePath = path.resolve(process.cwd(), 'package.json');
         const packageJson = npm_1.Npm.readPackageJson(filePath);
         packageJson['version'] = version;
@@ -25855,7 +25851,7 @@ async function run() {
         await git_1.Git.addAllFiles();
         await git_1.Git.commit(`${inputs.commitMessage} ${version}`);
         core.info('[-] Push:');
-        await git_1.Git.push(inputs.targetBranch);
+        await git_1.Git.push();
     }
     catch (error) {
         if (error instanceof Error) {
