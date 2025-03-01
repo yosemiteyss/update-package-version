@@ -25700,7 +25700,7 @@ class Git {
     async setConfig(email, username) {
         await (0, exec_1.execCommand)(`git config user.email "${email}"`);
         await (0, exec_1.execCommand)(`git config user.name "${username}"`);
-        await (0, exec_1.execCommand)(`git remote set-url --push origin https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}`);
+        await (0, exec_1.execCommand)(`git remote set-url --push origin https://${process.env.GITHUB_ACTOR}:${process.env.WRITE_REPO_PAT}@github.com/${process.env.GITHUB_REPOSITORY}`);
     }
     async checkout(branch) {
         const branchName = this.getShortBranchName(branch);
