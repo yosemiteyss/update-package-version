@@ -8,7 +8,7 @@ export interface Inputs {
   readonly commitMessage: string
 }
 
-export function getActionInputs(): Inputs {
+export function getInputs(): Inputs {
   return {
     runtime: core.getInput('runtime'),
     releaseTag: core.getInput('release_tag'),

@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import { getActionInputs, Git } from './common'
+import { getInputs, Git } from './common'
 import {
   DartUpdateAction,
   NodeUpdateAction,
@@ -8,7 +8,7 @@ import {
 
 export async function run(): Promise<void> {
   try {
-    const inputs = getActionInputs()
+    const inputs = getInputs()
     const git = new Git()
 
     let updateAction: UpdateAction | undefined
