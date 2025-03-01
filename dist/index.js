@@ -25675,13 +25675,16 @@ const execPromise = (0, util_1.promisify)(child_process_1.exec);
  * @param command the command.
  */
 async function execCommand(command) {
+    core.info(`[$] ${command}`);
     const output = await execPromise(command, {
         encoding: 'utf8',
         cwd: process.cwd()
     });
-    core.info(output.stdout);
+    if (output.stdout.length > 0) {
+        core.info(output.stdout);
+    }
     if (output.stderr.length > 0) {
-        core.error(output.stderr);
+        core.info(output.stderr);
     }
 }
 
