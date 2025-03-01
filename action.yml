@@ -7,13 +7,17 @@ branding:
   color: 'gray-dark'
 
 inputs:
+  runtime:
+    description: 'Specify the runtime'
+    required: true
+    type: choice
+    options:
+      - node
+      - dart
+      - flutter
   release_tag:
     description: 'Release tag, format must be vX.X.X'
     required: true
-  commit_lock_file:
-    description: 'Whether to commit package-lock.json or not'
-    required: false
-    default: 'true'
   commit_user_email:
     description: 'Email address for git commit'
     required: false
