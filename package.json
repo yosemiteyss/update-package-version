@@ -1,7 +1,7 @@
 {
   "name": "update-package-version",
   "description": "An GitHub Action to update node package version.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "yosemiteyss",
   "private": true,
   "homepage": "https://github.com/yosemiteyss/update-package-version",
