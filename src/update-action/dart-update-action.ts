@@ -1,4 +1,3 @@
-import { execCommand, Git } from '../common'
 import path from 'path'
 import fs from 'fs'
 import yaml from 'yaml'
@@ -7,14 +6,7 @@ import { UpdateAction } from './update-action'
 import * as process from 'node:process'
 
 export class DartUpdateAction extends UpdateAction {
-  constructor(
-    git: Git,
-    private readonly isFlutter: boolean
-  ) {
-    super(git)
-  }
-
-  protected async updateVersion(version: string): Promise<void> {
+  protected override async updateVersion(version: string): Promise<void> {
     const filePath = path.resolve(process.cwd(), 'pubspec.yaml')
     const pubspecYaml = this.readPubspecYaml(filePath)
 
@@ -22,14 +14,6 @@ export class DartUpdateAction extends UpdateAction {
     this.writePubspecYaml(filePath, pubspecYaml)
 
     core.info(`[-] Updated pubspec.yaml with version: ${version}`)
-  }
-
-  protected async updateLockFile(): Promise<void> {
-    if (this.isFlutter) {
-      await execCommand('flutter pub get')
-    } else {
-      await execCommand('dart pub get')
-    }
   }
 
   private readPubspecYaml(filePath: string) {

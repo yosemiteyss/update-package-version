@@ -14,7 +14,6 @@ inputs:
     options:
       - node
       - dart
-      - flutter
   release_tag:
     description: 'Release tag, format must be vX.X.X'
     required: true

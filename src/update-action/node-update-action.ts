@@ -5,7 +5,7 @@ import * as core from '@actions/core'
 import { UpdateAction } from './update-action'
 
 export class NodeUpdateAction extends UpdateAction {
-  protected async updateVersion(version: string): Promise<void> {
+  protected override async updateVersion(version: string): Promise<void> {
     const filePath = path.resolve(process.cwd(), 'package.json')
     const packageJson = this.readPackageJson(filePath)
 

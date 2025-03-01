@@ -6,7 +6,7 @@ export abstract class UpdateAction {
 
   protected abstract updateVersion(version: string): Promise<void>
 
-  protected abstract updateLockFile(): Promise<void>
+  protected async updateLockFile(): Promise<void> {}
 
   async run(inputs: Inputs): Promise<void> {
     const version = this.parseReleaseTagToVersion(inputs.releaseTag)

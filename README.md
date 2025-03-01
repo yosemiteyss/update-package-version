@@ -4,7 +4,7 @@ An GitHub Action to update package version.
 
 ### Inputs
 
-- `runtime`: Specify the runtime, values: `node`, `dart`, `flutter`
+- `runtime`: Specify the runtime, values: `node`, `dart`
 - `release_tag`: Release tag, format must be vX.X.X
 - `commit_user_email` (Optional): Email address for git commit
 - `commit_user_name` (Optional): Username for git commit

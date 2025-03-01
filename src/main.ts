@@ -16,9 +16,7 @@ export async function run(): Promise<void> {
     if (inputs.runtime === 'node') {
       updateAction = new NodeUpdateAction(git)
     } else if (inputs.runtime === 'dart') {
-      updateAction = new DartUpdateAction(git, false)
-    } else if (inputs.runtime === 'flutter') {
-      updateAction = new DartUpdateAction(git, true)
+      updateAction = new DartUpdateAction(git)
     } else {
       throw new Error(`Unsupported runtime: ${inputs.runtime}`)
     }
