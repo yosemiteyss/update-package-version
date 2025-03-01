@@ -24,6 +24,7 @@ jobs:
       - name: Update Package Version
         uses: ./
         with:
+          runtime: node
           release_tag: ${{ github.event.inputs.release_tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
