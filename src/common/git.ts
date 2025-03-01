@@ -5,7 +5,7 @@ export class Git {
     await execCommand(`git config user.email "${email}"`)
     await execCommand(`git config user.name "${username}"`)
     await execCommand(
-      `git remote set-url --push origin https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}`
+      `git remote set-url --push origin https://${process.env.GITHUB_ACTOR}:${process.env.WRITE_REPO_PAT}@github.com/${process.env.GITHUB_REPOSITORY}`
     )
   }
 
