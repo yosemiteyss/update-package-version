@@ -15,7 +15,7 @@ export class NodeUpdateAction extends UpdateAction {
     core.info(`[-] Updated package.json with version: ${version}`)
   }
 
-  protected async updateLockFile(): Promise<void> {
+  protected override async updateLockFile(): Promise<void> {
     await execCommand('npm install')
   }
 
