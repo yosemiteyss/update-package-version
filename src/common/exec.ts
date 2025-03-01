@@ -9,14 +9,18 @@ const execPromise = promisify(exec)
  * @param command the command.
  */
 export async function execCommand(command: string) {
+  core.info(`[$] ${command}`)
+
   const output = await execPromise(command, {
     encoding: 'utf8',
     cwd: process.cwd()
   })
 
-  core.info(output.stdout)
+  if (output.stdout.length > 0) {
+    core.info(output.stdout)
+  }
 
   if (output.stderr.length > 0) {
-    core.error(output.stderr)
+    core.info(output.stderr)
   }
 }
