@@ -20,7 +20,7 @@ steps:
 
   - name: Update Package Version
     id: update-package-version
-    uses: yosemiteyss/update-package-version@v1.0.2
+    uses: yosemiteyss/update-package-version@v1.0.5
     with:
       runtime: node
       release_tag: ${{ github.event.release.tag_name }}
