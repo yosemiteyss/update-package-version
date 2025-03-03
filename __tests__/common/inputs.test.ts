@@ -10,23 +10,23 @@ describe('Inputs', () => {
 
   it('should return the correct inputs', () => {
     ;(core.getInput as jest.Mock)
-      .mockReturnValueOnce('node16')
+      .mockReturnValueOnce('node')
       .mockReturnValueOnce('v1.0.0')
-      .mockReturnValueOnce('user@example.com')
-      .mockReturnValueOnce('GitHub Actions')
-      .mockReturnValueOnce('chore: release v1.0.0')
+      .mockReturnValueOnce('github-actions[bot]@users.noreply.github.com')
+      .mockReturnValueOnce('github-actions[bot]')
+      .mockReturnValueOnce('ci: updated package version')
 
-    const expectedInputs: Inputs = {
-      runtime: 'node16',
+    const expected: Inputs = {
+      runtime: 'node',
       releaseTag: 'v1.0.0',
-      commitUserEmail: 'user@example.com',
-      commitUserName: 'GitHub Actions',
-      commitMessage: 'chore: release v1.0.0'
+      commitUserEmail: 'github-actions[bot]@users.noreply.github.com',
+      commitUserName: 'github-actions[bot]',
+      commitMessage: 'ci: updated package version'
     }
 
     const inputs = getInputs()
 
-    expect(inputs).toEqual(expectedInputs)
+    expect(inputs).toEqual(expected)
 
     expect(core.getInput).toHaveBeenCalledWith('runtime')
     expect(core.getInput).toHaveBeenCalledWith('release_tag')

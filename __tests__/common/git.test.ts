@@ -8,6 +8,7 @@ describe('Git', () => {
   let git: Git
 
   beforeEach(() => {
+    jest.clearAllMocks()
     git = new Git()
   })
 
