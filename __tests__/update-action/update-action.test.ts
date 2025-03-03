@@ -4,8 +4,7 @@ import { Git, Inputs } from '../../src/common'
 import * as core from '@actions/core'
 
 class MockUpdateAction extends UpdateAction {
-  protected override async updateVersion(version: string): Promise<void> {
-  }
+  protected override async updateVersion(version: string): Promise<void> {}
 }
 
 jest.mock('@actions/core')
@@ -33,9 +32,14 @@ describe('UpdateAction', () => {
 
       await updateAction.run(inputs)
 
-      expect(git.setConfig).toHaveBeenCalledWith('github-actions[bot]@users.noreply.github.com', 'github-actions[bot]')
+      expect(git.setConfig).toHaveBeenCalledWith(
+        'github-actions[bot]@users.noreply.github.com',
+        'github-actions[bot]'
+      )
       expect(git.addAllFiles).toHaveBeenCalled()
-      expect(git.commit).toHaveBeenCalledWith('ci: updated package version 1.0.0')
+      expect(git.commit).toHaveBeenCalledWith(
+        'ci: updated package version 1.0.0'
+      )
       expect(git.push).toHaveBeenCalled()
     })
   })
@@ -47,8 +51,9 @@ describe('UpdateAction', () => {
     })
 
     it('should throw an error for invalid version tag', () => {
-      expect(() => (updateAction as any).parseReleaseTagToVersion('1.2.3'))
-        .toThrow('Invalid release tag, tag format must be vX.X.X')
+      expect(() =>
+        (updateAction as any).parseReleaseTagToVersion('1.2.3')
+      ).toThrow('Invalid release tag, tag format must be vX.X.X')
     })
   })
 })

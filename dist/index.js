@@ -25670,10 +25670,6 @@ const util_1 = __nccwpck_require__(9023);
 const child_process_1 = __nccwpck_require__(5317);
 const core = __importStar(__nccwpck_require__(7484));
 const execPromise = (0, util_1.promisify)(child_process_1.exec);
-/**
- * Execute command, and write output to logs.
- * @param command the command.
- */
 async function execCommand(command) {
     core.info(`[$] ${command}`);
     const output = await execPromise(command, {
@@ -25801,9 +25797,9 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getActionInputs = getActionInputs;
+exports.getInputs = getInputs;
 const core = __importStar(__nccwpck_require__(7484));
-function getActionInputs() {
+function getInputs() {
     return {
         runtime: core.getInput('runtime'),
         releaseTag: core.getInput('release_tag'),
@@ -25861,17 +25857,14 @@ const common_1 = __nccwpck_require__(3737);
 const update_action_1 = __nccwpck_require__(8938);
 async function run() {
     try {
-        const inputs = (0, common_1.getActionInputs)();
+        const inputs = (0, common_1.getInputs)();
         const git = new common_1.Git();
         let updateAction;
         if (inputs.runtime === 'node') {
             updateAction = new update_action_1.NodeUpdateAction(git);
         }
         else if (inputs.runtime === 'dart') {
-            updateAction = new update_action_1.DartUpdateAction(git, false);
-        }
-        else if (inputs.runtime === 'flutter') {
-            updateAction = new update_action_1.DartUpdateAction(git, true);
+            updateAction = new update_action_1.DartUpdateAction(git);
         }
         else {
             throw new Error(`Unsupported runtime: ${inputs.runtime}`);
@@ -25934,7 +25927,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.DartUpdateAction = void 0;
-const common_1 = __nccwpck_require__(3737);
 const path_1 = __importDefault(__nccwpck_require__(6928));
 const fs_1 = __importDefault(__nccwpck_require__(9896));
 const yaml_1 = __importDefault(__nccwpck_require__(8815));
@@ -25942,25 +25934,12 @@ const core = __importStar(__nccwpck_require__(7484));
 const update_action_1 = __nccwpck_require__(5960);
 const process = __importStar(__nccwpck_require__(1708));
 class DartUpdateAction extends update_action_1.UpdateAction {
-    isFlutter;
-    constructor(git, isFlutter) {
-        super(git);
-        this.isFlutter = isFlutter;
-    }
     async updateVersion(version) {
         const filePath = path_1.default.resolve(process.cwd(), 'pubspec.yaml');
         const pubspecYaml = this.readPubspecYaml(filePath);
         pubspecYaml['version'] = version;
         this.writePubspecYaml(filePath, pubspecYaml);
         core.info(`[-] Updated pubspec.yaml with version: ${version}`);
-    }
-    async updateLockFile() {
-        if (this.isFlutter) {
-            await (0, common_1.execCommand)('flutter pub get');
-        }
-        else {
-            await (0, common_1.execCommand)('dart pub get');
-        }
     }
     readPubspecYaml(filePath) {
         if (!fs_1.default.existsSync(filePath)) {
@@ -26126,6 +26105,7 @@ class UpdateAction {
     constructor(git) {
         this.git = git;
     }
+    async updateLockFile() { }
     async run(inputs) {
         const version = this.parseReleaseTagToVersion(inputs.releaseTag);
         core.info(`[-] Parsed release tag to version: ${version}`);
@@ -36654,12 +36634,8 @@ var __webpack_exports__ = {};
 var exports = __webpack_exports__;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-/**
- * The entrypoint for the action.
- */
 const main_1 = __nccwpck_require__(1730);
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-(0, main_1.run)();
+(0, main_1.run)().then();
 
 })();
 
