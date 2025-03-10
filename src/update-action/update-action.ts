@@ -32,9 +32,11 @@ export abstract class UpdateAction {
   }
 
   private parseReleaseTagToVersion(tag: string): string {
-    const versionTagRegex = /^v\d+\.\d+\.\d+$/
+    const versionTagRegex = /^v\d+\.\d+\.\d+(\+\d+)?$/
     if (!versionTagRegex.test(tag)) {
-      throw new Error('Invalid release tag, tag format must be vX.X.X')
+      throw new Error(
+        'Invalid release tag, tag format must be vX.X.X or vX.X.X+X'
+      )
     }
     return tag.replace('v', '')
   }
